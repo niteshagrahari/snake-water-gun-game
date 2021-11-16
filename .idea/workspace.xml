@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="40743c25-3107-4833-92ca-06ac1ac0b9df" name="Changes" comment="" />
+    <list default="true" id="40743c25-3107-4833-92ca-06ac1ac0b9df" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/game_client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/game_server.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="20xH0TrfW00tlXusalAm90GtoyW" />
   <component name="ProjectViewState">
@@ -17,7 +24,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
   </component>
   <component name="RunManager" selected="Python.game_client">
-    <configuration name="game_client" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="game_client" type="PythonConfigurationType" factoryName="Python" singleton="false" temporary="true" nameIsGenerated="true">
       <module name="snake water gun game" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -59,6 +66,10 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Python.game_client" />
+      <item itemvalue="Python.game_server" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.game_client" />

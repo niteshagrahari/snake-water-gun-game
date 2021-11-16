@@ -1,3 +1,4 @@
+
 import tkinter as tk
 from tkinter import PhotoImage
 from tkinter import messagebox
@@ -5,7 +6,6 @@ import socket
 from time import sleep
 import threading
 
-# MAIN GAME WINDOW
 window_main = tk.Tk()
 window_main.title("Game Client")
 your_name = ""
@@ -18,9 +18,10 @@ TOTAL_NO_OF_ROUNDS = 5
 your_score = 0
 opponent_score = 0
 
+
 client = None
 HOST_ADDR = "127.0.0.1"
-HOST_PORT = 5005
+HOST_PORT = 8080
 
 
 top_welcome_frame= tk.Frame(window_main)
@@ -111,19 +112,19 @@ def game_logic(you, opponent):
         winner = "draw"
     elif you == snake:
         if opponent == water:
-            winner = player1
-        else:
             winner = player0
+        else:
+            winner = player1
     elif you == gun:
         if opponent == snake:
-            winner = player1
-        else:
             winner = player0
+        else:
+            winner = player1
     elif you == water:
         if opponent == gun:
-            winner = player1
-        else:
             winner = player0
+        else:
+            winner = player1
     return winner
 
 
@@ -141,7 +142,7 @@ def enable_disable_buttons(todo):
 def connect():
     global your_name
     if len(ent_name.get()) < 1:
-        tk.messagebox.showerror(title="ERROR!!!", message="You MUST enter your first name <e.g. John>")
+        tk.messagebox.showerror(title="ERROR!!!", message="You MUST enter your first name <e.g. Nitesh>")
     else:
         your_name = ent_name.get()
         lbl_your_name["text"] = "Your name: " + your_name
@@ -172,7 +173,7 @@ def choice(arg):
     lbl_your_choice["text"] = "Your choice: " + your_choice
 
     if client:
-        client.send("Game_Round"+str(game_round)+your_choice)
+        client.send(("Game_Round"+str(game_round)+your_choice).encode())
         enable_disable_buttons("disable")
 
 
@@ -181,7 +182,7 @@ def connect_to_server(name):
     try:
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client.connect((HOST_ADDR, HOST_PORT))
-        client.send(name) # Send name to server after connecting
+        client.send(name.encode()) # Send name to server after connecting
 
 
         btn_connect.config(state=tk.DISABLED)
@@ -200,7 +201,7 @@ def receive_message_from_server(sck, m):
     global your_choice, opponent_choice, your_score, opponent_score
 
     while True:
-        from_server = sck.recv(4096)
+        from_server = sck.recv(4096).decode()
 
         if not from_server: break
 
@@ -223,10 +224,10 @@ def receive_message_from_server(sck, m):
             lbl_line_server.config(state=tk.DISABLED)
 
         elif from_server.startswith("$opponent_choice"):
-            # get the opponent choice from the server
+
             opponent_choice = from_server.replace("$opponent_choice", "")
 
-
+            # figure out who wins in this round
             who_wins = game_logic(your_choice, opponent_choice)
             round_result = " "
             if who_wins == "you":
@@ -238,13 +239,12 @@ def receive_message_from_server(sck, m):
             else:
                 round_result = "DRAW"
 
-            # Update GUI
+
             lbl_opponent_choice["text"] = "Opponent choice: " + opponent_choice
             lbl_result["text"] = "Result: " + round_result
 
-
+            # is this the last round e.g. Round 5?
             if game_round == TOTAL_NO_OF_ROUNDS:
-                # compute final result
                 final_result = ""
                 color = ""
 
@@ -264,7 +264,7 @@ def receive_message_from_server(sck, m):
                 enable_disable_buttons("disable")
                 game_round = 0
 
-
+            # Start the timer
             threading._start_new_thread(count_down, (game_timer, ""))
 
 

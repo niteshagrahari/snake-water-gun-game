@@ -3,24 +3,26 @@ import socket
 import threading
 from time import sleep
 
+
 window = tk.Tk()
-window.title("Server")
+window.title("Sever")
 
 topFrame = tk.Frame(window)
-btnStart = tk.Button(topFrame, text="Start", command=lambda: start_server())
+btnStart = tk.Button(topFrame, text="Start", command=lambda : start_server())
 btnStart.pack(side=tk.LEFT)
-btnStop = tk.Button(topFrame, text="Stop", command=lambda: stop_server(), state=tk.DISABLED)
+btnStop = tk.Button(topFrame, text="Stop", command=lambda : stop_server(), state=tk.DISABLED)
 btnStop.pack(side=tk.LEFT)
 topFrame.pack(side=tk.TOP, pady=(5, 0))
 
-
+# Middle frame consisting of two labels for displaying the host and port info
 middleFrame = tk.Frame(window)
-lblHost = tk.Label(middleFrame, text="Address: X.X.X.X")
+lblHost = tk.Label(middleFrame, text = "Address: X.X.X.X")
 lblHost.pack(side=tk.LEFT)
-lblPort = tk.Label(middleFrame, text="Port:XXXX")
+lblPort = tk.Label(middleFrame, text = "Port:XXXX")
 lblPort.pack(side=tk.LEFT)
 middleFrame.pack(side=tk.TOP, pady=(5, 0))
 
+# The client frame shows the client area
 clientFrame = tk.Frame(window)
 lblLine = tk.Label(clientFrame, text="**********Client List**********").pack()
 scrollBar = tk.Scrollbar(clientFrame)
@@ -31,24 +33,27 @@ scrollBar.config(command=tkDisplay.yview)
 tkDisplay.config(yscrollcommand=scrollBar.set, background="#F4F6F7", highlightbackground="grey", state="disabled")
 clientFrame.pack(side=tk.BOTTOM, pady=(5, 10))
 
+
 server = None
 HOST_ADDR = "127.0.0.1"
-HOST_PORT = 5005
+HOST_PORT = 8080
 client_name = " "
 clients = []
 clients_names = []
 player_data = []
 
 
+# Start server function
 def start_server():
-    global server, HOST_ADDR, HOST_PORT  # code is fine without this
+    global server, HOST_ADDR, HOST_PORT # code is fine without this
     btnStart.config(state=tk.DISABLED)
     btnStop.config(state=tk.NORMAL)
 
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
+
     server.bind((HOST_ADDR, HOST_PORT))
-    server.listen(5)
+    server.listen(5)  # server is listening for client connection
 
     threading._start_new_thread(accept_clients, (server, " "))
 
@@ -78,26 +83,26 @@ def send_receive_client_message(client_connection, client_ip_addr):
 
     client_msg = " "
 
-
-    client_name = client_connection.recv(1024)
+    # send welcome message to client
+    client_name = client_connection.recv(4096).decode()
     if len(clients) < 2:
-        client_connection.send("welcome1")
+        client_connection.send(("welcome1").encode())
     else:
-        client_connection.send("welcome2")
+        client_connection.send(("welcome2").encode())
 
     clients_names.append(client_name)
-    update_client_names_display(clients_names)
+    update_client_names_display(clients_names)  # update client names display
 
     if len(clients) > 1:
         sleep(1)
 
 
-        clients[0].send("opponent_name$" + clients_names[1])
-        clients[1].send("opponent_name$" + clients_names[0])
+        clients[0].send(("opponent_name$" + clients_names[1]).encode())
+        clients[1].send(("opponent_name$" + clients_names[0]).encode())
 
 
     while True:
-        data = client_connection.recv(4096)
+        data = client_connection.recv(4096).decode()
         if not data: break
 
 
@@ -113,18 +118,17 @@ def send_receive_client_message(client_connection, client_ip_addr):
 
         if len(player_data) == 2:
 
-            player_data[0].get("socket").send("$opponent_choice" + player_data[1].get("choice"))
-            player_data[1].get("socket").send("$opponent_choice" + player_data[0].get("choice"))
+            player_data[0].get("socket").send(("$opponent_choice" + player_data[1].get("choice")).encode())
+            player_data[1].get("socket").send(("$opponent_choice" + player_data[0].get("choice")).encode())
 
             player_data = []
-
 
     idx = get_client_index(clients, client_connection)
     del clients_names[idx]
     del clients[idx]
     client_connection.close()
 
-    update_client_names_display(clients_names)  # update client names display
+    update_client_names_display(clients_names)
 
 
 def get_client_index(client_list, curr_client):
@@ -137,13 +141,12 @@ def get_client_index(client_list, curr_client):
     return idx
 
 
-
 def update_client_names_display(name_list):
     tkDisplay.config(state=tk.NORMAL)
     tkDisplay.delete('1.0', tk.END)
 
     for c in name_list:
-        tkDisplay.insert(tk.END, c + "\n")
+        tkDisplay.insert(tk.END, c+"\n")
     tkDisplay.config(state=tk.DISABLED)
 
 
